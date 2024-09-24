@@ -14,9 +14,12 @@
          Simple HTML elements (text formatting, paragraphs, and lists) can be added inside of <![CDATA[ ]]> tag.
          Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-description -->
     <description><![CDATA[
-    Create feature directory with ease<br>
+    This plugin simplifies the creation of feature directories in your project. With a single action, it generates a complete directory structure for a new feature, including data, domain, and presentation layers. This helps maintain a consistent project structure and speeds up the development process.
+
+    Currently, it generates folder structures for clean architecture and supports Flutter. Soon, it will support other architectures and design patterns.
+
     <em>Powered by: DirectoryToolBox</em>
-  ]]></description>
+    ]]></description>
 
     <!-- Product and plugin compatibility requirements.
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html -->
@@ -31,7 +34,7 @@
     <actions>
         <action id="com.jinn.directorytoolbox.CreateFeatureDirectoryAction"
                 class="com.jinn.directorytoolbox.CreateFeatureDirectoryAction"
-                text="Add Feature"
+                text="Add Feature Directory"
                 description="Creates a feature directory structure">
 
             <add-to-group group-id="ProjectViewPopupMenu" anchor="first"/>

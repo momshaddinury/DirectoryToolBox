@@ -46,6 +46,7 @@ class CreateFeatureDirectoryAction: AnAction() {
         File(domainDir, "repository").mkdirs()
         File(domainDir, "repository/${featureName}_repository.dart").createNewFile()
         File(domainDir, "use_case").mkdirs()
+        File(domainDir, "use_case/${featureName}_use_case.dart").createNewFile()
 
         val presentationDir = File(featureDir, "presentation")
         presentationDir.mkdirs()
