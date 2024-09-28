@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "com.jinn"
-version = "1.1-SNAPSHOT"
+version = "1.2.1"
 
 repositories {
     mavenCentral()
@@ -32,7 +32,7 @@ tasks {
 
     patchPluginXml {
         sinceBuild.set("222")
-        untilBuild.set("241.*")
+        untilBuild.set("243.*")
     }
 
     signPlugin {
