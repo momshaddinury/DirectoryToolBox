@@ -26,18 +26,24 @@ class CreateFeatureDirectoryAction : AnAction() {
         if (!dialog.showAndGet()) return // If cancelled, do nothing
 
         val featureName = dialog.featureName
+        val subFeatureName = dialog.subFeatureName
         val stateManagement = dialog.stateManagement
 
         if (featureName.isNullOrEmpty()) return // If no input, do nothing
 
         // 3. Create the directory structure
-        createFeatureDirectory(baseDir, featureName, stateManagement)
+        createFeatureDirectory(baseDir, featureName, subFeatureName, stateManagement)
 
         // 4. Refresh the project view to show the new directories
         baseDir?.refresh(false, true)
     }
 
-    private fun createFeatureDirectory(baseDir: VirtualFile?, featureName: String, stateManagement: String) {
+    private fun createFeatureDirectory(
+        baseDir: VirtualFile?,
+        featureName: String,
+        subFeatureName: String?,
+        stateManagement: String
+    ) {
         if (baseDir == null) return
 
         val featureDir = File(baseDir.path, featureName)
@@ -66,28 +72,50 @@ class CreateFeatureDirectoryAction : AnAction() {
         val sharedDir = File(presentationDir, "shared")
         sharedDir.mkdirs()
         File(sharedDir, "widget").mkdirs()
-        createStateManagementDirectories(sharedDir, stateManagement)
+        createStateManagementDirectories(sharedDir, stateManagement, true)
 
         // Create feature directories
-        val feature1Dir = File(presentationDir, "feature_1")
-        feature1Dir.mkdirs()
-        File(feature1Dir, "view").mkdirs()
-        File(feature1Dir, "widget").mkdirs()
-        createStateManagementDirectories(feature1Dir, stateManagement)
+        if (subFeatureName.isNullOrEmpty()) {
+            val feature1Dir = File(presentationDir, "feature_1")
+            feature1Dir.mkdirs()
+            File(feature1Dir, "view").mkdirs()
+            File(feature1Dir, "widget").mkdirs()
+            createStateManagementDirectories(feature1Dir, stateManagement, true)
+        } else {
+            val subFeatureNames = subFeatureName.split(",").map { it.trim() }
+            subFeatureNames.forEach {
+                val subFeatureDir = File(presentationDir, it)
+                subFeatureDir.mkdirs()
+                File(subFeatureDir, "view").mkdirs()
+                File(subFeatureDir, "widget").mkdirs()
+                createStateManagementDirectories(subFeatureDir, stateManagement)
+            }
+        }
+
     }
 
-    private fun createStateManagementDirectories(dir: File, stateManagement: String) {
+    private fun createStateManagementDirectories(dir: File, stateManagement: String, isEmpty: Boolean = false) {
         when (stateManagement) {
             "Riverpod" -> {
                 File(dir, "riverpod").mkdirs()
+                if (!isEmpty) File(dir, "riverpod/${dir.name}_provider.dart").createNewFile()
             }
 
             "Bloc" -> {
                 File(dir, "bloc").mkdirs()
+                if (!isEmpty) {
+                    File(dir, "bloc/${dir.name}_bloc.dart").createNewFile()
+                    File(dir, "bloc/${dir.name}_event.dart").createNewFile()
+                    File(dir, "bloc/${dir.name}_state.dart").createNewFile()
+                }
             }
 
             "Cubit" -> {
                 File(dir, "cubit").mkdirs()
+                if (!isEmpty) {
+                    File(dir, "cubit/${dir.name}_cubit.dart").createNewFile()
+                    File(dir, "cubit/${dir.name}_state.dart").createNewFile()
+                }
             }
         }
     }
@@ -95,9 +123,11 @@ class CreateFeatureDirectoryAction : AnAction() {
 
 class FeatureDirectoryDialog : DialogWrapper(true) {
     var featureName: String? = null
+    var subFeatureName: String? = null
     var stateManagement: String = "Riverpod"
 
     private val featureNameField = JTextField()
+    private val subFeatureNameField = JTextField()
     private val stateManagementOptions = arrayOf("Riverpod", "Bloc", "Cubit")
     private val stateManagementComboBox = ComboBox(stateManagementOptions)
 
@@ -110,8 +140,11 @@ class FeatureDirectoryDialog : DialogWrapper(true) {
         val panel = JPanel(BorderLayout())
         val inputPanel = JPanel(GridLayout(0, 1))
 
-        inputPanel.add(JLabel("Enter feature name:"))
+        inputPanel.add(JLabel("Feature name:"))
         inputPanel.add(featureNameField.apply { columns = 30 })
+
+        inputPanel.add(JLabel("Sub feature name (Optional):"))
+        inputPanel.add(subFeatureNameField.apply { columns = 30 })
 
         inputPanel.add(JLabel("Select state management:"))
         inputPanel.add(stateManagementComboBox)
@@ -126,6 +159,7 @@ class FeatureDirectoryDialog : DialogWrapper(true) {
 
     override fun doOKAction() {
         featureName = featureNameField.text
+        subFeatureName = subFeatureNameField.text
         stateManagement = stateManagementComboBox.selectedItem as String
         super.doOKAction()
     }

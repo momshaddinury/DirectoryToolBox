@@ -21,6 +21,7 @@
         Features:
         <ul>
             <li>Automatic creation of directory structures for data, domain, and presentation layers</li>
+            <li>Support for sub features</li>
             <li>State management-specific directories (Riverpod, Bloc, Cubit)</li>
             <li>Project view refresh to display newly created directories</li>
         </ul>
