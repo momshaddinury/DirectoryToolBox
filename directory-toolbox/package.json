@@ -1,0 +1,74 @@
+{
+  "name": "directory-toolbox",
+  "displayName": "Directory ToolBox",
+  "publisher": "momshaddinury",
+  "description": "Effortlessly generate feature directories with Directory Toolbox—streamline your project's architecture in seconds!",
+  "version": "1.0.2",
+  "icon": "icon.png",
+  "engines": {
+    "vscode": "^1.94.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "extension.createFeatureDirectory",
+        "title": "Add Feature"
+      },
+      {
+        "command": "extension.addSubFeatureDirectory",
+        "title": "Add Sub Feature"
+      }
+    ],
+    "submenus": [
+      {
+        "id": "directoryToolbox",
+        "label": "Directory ToolBox"
+      }
+    ],
+    "menus": {
+      "explorer/context": [
+        {
+          "submenu": "directoryToolbox",
+          "when": "explorerResourceIsFolder",
+          "group": "1"
+        }
+      ],
+      "directoryToolbox": [
+        {
+          "command": "extension.createFeatureDirectory",
+          "when": "explorerResourceIsFolder",
+          "group": "1_modification@1"
+        },
+        {
+          "command": "extension.addSubFeatureDirectory",
+          "when": "explorerResourceIsFolder",
+          "group": "1_modification@2"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src",
+    "test": "vscode-test"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.9",
+    "@types/node": "20.x",
+    "@types/vscode": "^1.94.0",
+    "@typescript-eslint/eslint-plugin": "^8.10.0",
+    "@typescript-eslint/parser": "^8.7.0",
+    "@vscode/test-cli": "^0.0.10",
+    "@vscode/test-electron": "^2.4.1",
+    "eslint": "^9.13.0",
+    "typescript": "^5.6.3"
+  }
+}
